@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+
+	<meta charset="UTF-8">
+
+	<title>Login</title>
+	
+	<link rel="stylesheet" th:href="@{/css/estilos.css}">
+
+</head>
+
+<body class="body-login">
+
+	<div class="login-container">
+
+		<!-- LOGO -->
+
+		<div class="logo">
+
+			<div class="logo-icon">
+				⌂
+			</div>
+
+			<h1>
+
+				<span>SIGI</span>
+				| Plaza 4
+
+			</h1>
+
+		</div>
+
+		<!-- DESCRIPCIÓN -->
+
+		<div class="descripcion">
+
+			Sistema Integrado de Gestión de Inventarios
+			<br>
+			Huamanga, Ayacucho - Perú
+
+		</div>
+
+		<!-- LOGIN -->
+
+		<form th:action="@{/login}" method="post">
+
+			<label>Perfil de acceso</label>
+
+			<select name="perfil" class="form-control" required>
+				<option value="ADMINISTRADOR">Administrador</option>
+				<option value="ALMACEN">Encargado de Almacén</option>
+				<option value="GERENCIA">Gerencia</option>
+			</select>
+
+			<label>Usuario</label>
+
+			<input type="text" name="username" placeholder="Ingrese usuario">
+
+			<label>Contraseña</label>
+
+			<input type="password" name="password" placeholder="Ingrese contraseña">
+
+			<button type="submit" class="btn-login">
+				<i class="fa-solid fa-right-to-bracket"></i>
+
+				Iniciar sesión →
+
+			</button>
+
+			<!-- ERROR LOGIN -->
+
+			<div th:if="${param.error}" class="error">
+
+				Usuario o contraseña incorrectos
+
+			</div>
+
+		</form>
+
+		<div class="footer">
+
+			© 2026 Plaza Quattro — Huamanga, Ayacucho  ·  SIGI v1.0
+
+		</div>
+
+	</div>
+
+</body>
+
+</html>

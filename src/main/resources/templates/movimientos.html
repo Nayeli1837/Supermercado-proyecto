@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>SIGI - Movimientos de Almacén</title>
+	<link rel="stylesheet" th:href="@{/css/estilos.css}">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+</head>
+
+<body>
+
+	<aside class="sidebar">
+		<div class="sidebar-brand">
+			<span class="logo-dot"></span> SIGI
+		</div>
+
+		<div class="sidebar-menu">
+
+			<p class="menu-label">Principal</p>
+
+			<!-- Dashboard -->
+			<a th:if="${#authentication != null}" th:href="@{/dashboard}" class="menu-item">
+				<i class="fa-solid fa-table-cells-large"></i>
+				<span class="menu-text">Dashboard</span>
+			</a>
+
+			<!-- Inventario -->
+			<a th:if="${#authentication.authorities.![authority].contains('ROLE_ADMINISTRADOR')
+		            or #authentication.authorities.![authority].contains('ROLE_ALMACEN')
+		            or #authentication.authorities.![authority].contains('ROLE_GERENCIA')}" th:href="@{/productos}"
+				class="menu-item">
+				<i class="fa-solid fa-cube"></i>
+				<span class="menu-text">Inventario</span>
+				<span class="badge-count" th:text="${totalProductos}"></span>
+			</a>
+
+			<!-- Alertas -->
+			<a th:if="${#authentication.authorities.![authority].contains('ROLE_ADMINISTRADOR') or #authentication.authorities.![authority].contains('ROLE_ALMACEN')}"
+				th:href="@{/productos/alertas}" class="menu-item">
+				<i class="fa-regular fa-bell"></i>
+				<span class="menu-text">Alertas</span>
+			</a>
+
+			<p class="menu-label">Gestión</p>
+
+			<!-- Movimientos -->
+			<a th:if="${#authentication.authorities.![authority].contains('ROLE_ADMINISTRADOR') or #authentication.authorities.![authority].contains('ROLE_ALMACEN')}"
+				th:href="@{/movimientos}" class="menu-item activo">
+				<i class="fa-solid fa-arrow-right-arrow-left"></i>
+				<span class="menu-text">Movimientos</span>
+			</a>
+
+			<!-- Proveedores -->
+			<a th:if="${#authentication.authorities.![authority].contains('ROLE_ADMINISTRADOR')
+		            or #authentication.authorities.![authority].contains('ROLE_ALMACEN')}" th:href="@{/proveedores}"
+				class="menu-item">
+				<i class="fa-solid fa-truck"></i>
+				<span class="menu-text">Proveedores</span>
+			</a>
+
+			<!-- Categorías -->
+			<a th:if="${#authentication.authorities.![authority].contains('ROLE_ADMINISTRADOR')}"
+				th:href="@{/categorias}" class="menu-item">
+				<i class="fa-solid fa-tags"></i>
+				<span class="menu-text">Categorías</span>
+			</a>
+
+			<p class="menu-label">Análisis</p>
+
+			<!-- Reportes -->
+			<a th:if="${#authentication.authorities.![authority].contains('ROLE_ADMINISTRADOR')
+		            or #authentication.authorities.![authority].contains('ROLE_GERENCIA')}" th:href="@{/productos/reportes}"
+				class="menu-item">
+				<i class="fa-solid fa-chart-column"></i>
+				<span class="menu-text">Reportes</span>
+			</a>
+
+			<!-- Usuarios -->
+			<a th:if="${#authentication.authorities.![authority].contains('ROLE_ADMINISTRADOR')}" th:href="@{/usuarios}"
+				class="menu-item">
+				<i class="fa-solid fa-users"></i>
+				<span class="menu-text">Usuarios</span>
+			</a>
+
+		</div>
+
+		<div class="sidebar-footer">
+			<form th:action="@{/logout}" method="post" style="margin: 0;">
+				<button type="submit" class="btn-logout"> <i class="fa-solid fa-right-from-bracket"></i>
+					Cerrar sesión
+				</button>
+			</form>
+		</div>
+	</aside>
+
+	<div class="main-wrapper">
+
+		<header class="top-header">
+			<div class="header-title">Plaza 4 — Historial y Transacciones (Kardex)</div>
+			<div class="header-user">
+				<div class="avatar" th:text="${#strings.substring(usuario,0,1)}"> A</div>
+				<div class="user-info">
+					<span th:text="${usuario}"> Administrador </span>
+					<small class="rol-usuario" th:text="${rol}">
+						ADMINISTRADOR
+					</small>
+				</div>
+
+			</div>
+		</header>
+
+		<main class="main-content">
+
+			<div th:if="${mensajeExito}" class="alerta-exito">
+				🚀 <span th:text="${mensajeExito}">Movimiento registrado con éxito.</span>
+			</div>
+			<div th:if="${mensajeError}" class="alerta-error">
+				⚠️ <span th:text="${mensajeError}">Error al procesar la operación.</span>
+			</div>
+
+			<div class="encabezado-vista">
+				<h1>Movimientos de Inventario</h1>
+				<p>Registra entradas o salidas físicas y audita el historial de stock.</p>
+
+			</div>
+			<div class="contenedor">
+
+			    <!-- REGISTRAR OPERACIÓN -->
+			    <div class="panel panel-operacion">
+
+			        <h3 class="panel-titulo">
+			            <i class="fa-solid fa-arrow-right-arrow-left"></i>
+			            Registrar Operación
+			        </h3>
+
+			        <form th:action="@{/movimientos/guardar}"
+			              th:object="${movimiento}"
+			              method="post"
+			              class="form-operacion">
+
+			            <div class="form-grupo">
+			                <label>Tipo de Transacción</label>
+
+			                <select th:field="*{tipo}" class="form-select">
+			                    <option value="">Seleccione Tipo</option>
+			                    <option value="ENTRADA">⬇ ENTRADA (Abastecimiento)</option>
+			                    <option value="SALIDA">⬆ SALIDA (Venta / Despacho)</option>
+			                </select>
+
+			                <small th:if="${#fields.hasErrors('tipo')}"
+			                       th:errors="*{tipo}"
+			                       class="error-feedback"></small>
+
+			            </div>
+
+			            <div class="form-grupo">
+
+			                <label>Producto</label>
+
+			                <select th:field="*{producto}" class="form-select">
+
+			                    <option value="">Seleccione Producto</option>
+
+			                    <option th:each="prod : ${productos}"
+			                            th:value="${prod.id}"
+			                            th:text="${prod.nombre} + ' (Stock: ' + ${prod.stock} + ')'">
+			                    </option>
+
+			                </select>
+
+			                <small th:if="${#fields.hasErrors('producto')}"
+			                       th:errors="*{producto}"
+			                       class="error-feedback"></small>
+
+			            </div>
+
+			            <div class="form-grupo">
+
+			                <label>Cantidad</label>
+
+			                <input type="number"
+			                       th:field="*{cantidad}"
+			                       min="1"
+			                       placeholder="Ej: 50"/>
+
+			                <small th:if="${#fields.hasErrors('cantidad')}"
+			                       th:errors="*{cantidad}"
+			                       class="error-feedback"></small>
+
+			            </div>
+
+			            <button type="submit" class="btn btn-exito btn-submit-full">
+			                <i class="fa-solid fa-floppy-disk"></i>
+			                Procesar Movimiento
+			            </button>
+
+			        </form>
+
+			    </div>
+
+			    <!-- HISTORIAL -->
+
+			    <div class="panel">
+
+					<table class="tabla">
+						<thead>
+							<tr>
+								<th>ID</th>
+								<th>Fecha y Hora</th>
+								<th>Producto</th>
+								<th>Tipo</th>
+								<th>Cant.</th>
+								<th>Responsable</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr th:if="${#lists.isEmpty(movimientos)}">
+								<td colspan="6" class="tabla-celda-vacia">
+									No se han registrado movimientos de inventario todavía.
+								</td>
+							</tr>
+
+							<tr th:each="mov : ${movimientos}">
+								<td th:text="${mov.id}" class="texto-muted-bold">1</td>
+								<td th:text="${#temporals.format(mov.fecha, 'dd/MM/yyyy hh:mm a')}">23/06/2026 08:30 PM
+								</td>
+								<td th:text="${mov.producto.nombre}" class="texto-medium">Arroz Costeño 1kg</td>
+
+								<td>
+									<span th:if="${mov.tipo == 'ENTRADA'}" class="badge-movimiento entrada">📥
+										ENTRADA</span>
+									<span th:if="${mov.tipo == 'SALIDA'}" class="badge-movimiento salida">📤
+										SALIDA</span>
+								</td>
+
+								<td th:text="${mov.cantidad}" class="texto-bold">50</td>
+								<td th:text="${mov.usuario.username}">admin_user</td>
+							</tr>
+						</tbody>
+					</table>
+
+			    </div>
+
+			</div>
+		</main>
+	</div>
+
+</body>
+
+</html>

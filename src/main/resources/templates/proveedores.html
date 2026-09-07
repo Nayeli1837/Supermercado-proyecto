@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>SIGI - Proveedores</title>
+	<link rel="stylesheet" th:href="@{/css/estilos.css}">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+</head>
+
+<body>
+
+	<aside class="sidebar">
+			<div class="sidebar-brand">
+				<span class="logo-dot"></span> SIGI
+			</div>
+
+			<div class="sidebar-menu">
+
+			    <p class="menu-label">Principal</p>
+
+			    <!-- Dashboard -->
+			    <a th:if="${#authentication != null}"
+			       th:href="@{/dashboard}"
+			       class="menu-item">
+			        <i class="fa-solid fa-table-cells-large"></i>
+			        <span class="menu-text">Dashboard</span>
+			    </a>
+
+			    <!-- Inventario -->
+			    <a th:if="${#authentication.authorities.![authority].contains('ROLE_ADMINISTRADOR')
+			            or #authentication.authorities.![authority].contains('ROLE_ALMACEN')
+			            or #authentication.authorities.![authority].contains('ROLE_GERENCIA')}"
+			       th:href="@{/productos}"
+			       class="menu-item">
+			        <i class="fa-solid fa-cube"></i>
+			        <span class="menu-text">Inventario</span>
+			        <span class="badge-count" th:text="${totalProductos}"></span>
+			    </a>
+
+			    <!-- Alertas -->
+			    <a th:if="${#authentication.authorities.![authority].contains('ROLE_ADMINISTRADOR') or #authentication.authorities.![authority].contains('ROLE_ALMACEN')}"
+			      th:href="@{/productos/alertas}"
+			       class="menu-item">
+			        <i class="fa-regular fa-bell"></i>
+			        <span class="menu-text">Alertas</span>
+			    </a>
+
+			    <p class="menu-label">Gestión</p>
+
+			    <!-- Movimientos -->
+			    <a th:if="${#authentication.authorities.![authority].contains('ROLE_ADMINISTRADOR') or #authentication.authorities.![authority].contains('ROLE_ALMACEN')}"
+			       th:href="@{/movimientos}"
+			       class="menu-item">
+			        <i class="fa-solid fa-arrow-right-arrow-left"></i>
+			        <span class="menu-text">Movimientos</span>
+			    </a>
+
+			    <!-- Proveedores -->
+			    <a th:if="${#authentication.authorities.![authority].contains('ROLE_ADMINISTRADOR')
+			            or #authentication.authorities.![authority].contains('ROLE_ALMACEN')}"
+			       th:href="@{/proveedores}"
+			       class="menu-item activo">
+			        <i class="fa-solid fa-truck"></i>
+			        <span class="menu-text">Proveedores</span>
+			    </a>
+
+			    <!-- Categorías -->
+			    <a th:if="${#authentication.authorities.![authority].contains('ROLE_ADMINISTRADOR')}"
+			       th:href="@{/categorias}"
+			       class="menu-item">
+			        <i class="fa-solid fa-tags"></i>
+			        <span class="menu-text">Categorías</span>
+			    </a>
+
+			    <p class="menu-label">Análisis</p>
+
+			    <!-- Reportes -->
+			    <a th:if="${#authentication.authorities.![authority].contains('ROLE_ADMINISTRADOR')
+			            or #authentication.authorities.![authority].contains('ROLE_GERENCIA')}"
+			       th:href="@{/productos/reportes}"
+			       class="menu-item">
+			        <i class="fa-solid fa-chart-column"></i>
+			        <span class="menu-text">Reportes</span>
+			    </a>
+
+			    <!-- Usuarios -->
+			    <a th:if="${#authentication.authorities.![authority].contains('ROLE_ADMINISTRADOR')}"
+			       th:href="@{/usuarios}"
+			       class="menu-item">
+			        <i class="fa-solid fa-users"></i>
+			        <span class="menu-text">Usuarios</span>
+			    </a>
+
+			</div>
+
+			<div class="sidebar-footer">
+				<form th:action="@{/logout}" method="post" style="margin: 0;">
+					<button type="submit" class="btn-logout"> <i class="fa-solid fa-right-from-bracket"></i>
+						Cerrar sesión
+					</button>
+				</form>
+			</div>
+		</aside>
+
+	<div class="main-wrapper">
+
+		<header class="top-header">
+
+			<div class="header-title">Plaza 4 — Gestión de Inventarios</div>
+
+			<div class="header-user">
+				<div class="avatar" th:text="${#strings.substring(usuario,0,1)}"> A</div>
+				<div class="user-info">
+					<span th:text="${usuario}"> Administrador </span>
+					<small class="rol-usuario" th:text="${rol}">
+						ADMINISTRADOR
+					</small>
+				</div>
+
+			</div>
+
+		</header>
+
+		<main class="main-content">
+
+			<div style="display: flex;
+			            justify-content: space-between;
+			            align-items: center;
+			            margin-bottom: 25px;">
+
+				<div>
+
+					<h1 style="margin-bottom: 5px;">
+						Gestión de proveedores
+					</h1>
+
+					<p style="color: var(--texto-secundario);
+					          font-size: 0.9rem;"
+					   th:text="${totalProveedores}
+					   + ' proveedores registrados en el sistema'">
+
+					</p>
+
+				</div>
+
+				<a th:if="${#authentication.authorities.![authority].contains('ROLE_ADMINISTRADOR')}"
+				   th:href="@{/proveedores/nuevo}"
+				   class="btn btn-exito">
+				    <i class="fa-solid fa-circle-plus"></i> <span> Nuevo proveedor</span>
+				</a>
+
+			</div>
+
+			<!-- BUSCADOR -->
+
+			<form th:action="@{/proveedores}"
+			      method="get"
+			      class="barra-superior">
+
+				<input type="text"
+				       name="buscar"
+				       th:value="${param.buscar}"
+				       placeholder="Buscar proveedor..."
+				       class="input-busqueda">
+
+				<div class="filtros">
+
+					<button type="submit" class="btn-buscar">
+					    <i class="fa-solid fa-magnifying-glass"></i>
+					    Buscar
+					</button>
+
+				</div>
+
+			</form>
+
+			<section class="proveedores-grid">
+
+			    <!-- CARD PROVEEDORES -->
+
+			    <div class="proveedor-card"
+
+			         th:each="p : ${proveedores}">
+
+			        <div class="card-top">
+
+			            <div>
+
+			                <h3 th:text="${p.nombre}"></h3>
+
+			                <span class="ruc">
+
+			                    <i class="fa-solid fa-building"></i>
+
+			                    RUC:
+			                    <span th:text="${p.ruc}"></span>
+
+			                </span>
+
+			            </div>
+
+			            <span class="estado">
+
+			                Activo
+
+			            </span>
+
+			        </div>
+
+			        <div class="card-body">
+
+			            <p>
+
+			                <i class="fa-solid fa-phone"></i>
+
+			                <span th:text="${p.telefono}"></span>
+
+			            </p>
+
+			            <p>
+
+			                <i class="fa-solid fa-envelope"></i>
+
+			                <span th:text="${p.email}"></span>
+
+			            </p>
+
+			            <p>
+
+			                <i class="fa-solid fa-location-dot"></i>
+
+			                <span th:text="${p.direccion}"></span>
+
+			            </p>
+
+			        </div>
+					<div class="card-footer">
+
+					    <a th:if="${#authentication.authorities.![authority].contains('ROLE_ADMINISTRADOR')}"
+					       th:href="@{/proveedores/editar/{id}(id=${p.idProveedor})}"
+					       class="btn-icono btn-editar"
+					       title="Editar producto">
+
+					        <i class="fa-solid fa-pen-to-square"></i> Ver detalle
+
+					    </a>
+
+					    <form th:if="${#authentication.authorities.![authority].contains('ROLE_ADMINISTRADOR')}"
+					          th:action="@{/proveedores/eliminar/{id}(id=${p.idProveedor})}"
+					          method="post"
+					          onsubmit="return confirm('¿Seguro que deseas eliminar este proveedor?')">
+
+					        <button type="submit"
+					                class="btn-icono btn-eliminar"
+					                title="Eliminar proveedor">
+
+					            <i class="fa-solid fa-trash"></i>
+
+					        </button>
+
+					    </form>
+
+					</div>
+
+
+			    </div>
+
+			    <!-- AGREGAR -->
+
+			    <div class="proveedor-card nueva-card"
+
+			         th:if="${rol=='ADMINISTRADOR'}">
+
+			        <a th:href="@{/proveedores/nuevo}">
+
+			            <i class="fa-solid fa-plus"></i>
+
+			            <span>
+
+			                Agregar proveedor
+
+			            </span>
+
+			        </a>
+
+			    </div>
+
+			</section>
+
+		</main>
+
+	</div>
+
+</body>
+
+</html>

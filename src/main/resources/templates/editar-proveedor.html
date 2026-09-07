@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Editar Proveedor</title>
+
+    <link rel="stylesheet"
+          th:href="@{/css/estilos.css}">
+
+</head>
+
+<body>
+
+    <!-- SIDEBAR -->
+
+	<aside class="sidebar">
+			<div class="sidebar-brand">
+				<span class="logo-dot"></span> SIGI
+			</div>
+
+			<div class="sidebar-menu">
+
+			    <p class="menu-label">Principal</p>
+
+			    <!-- Dashboard -->
+			    <a th:if="${#authentication != null}"
+			       th:href="@{/dashboard}"
+			       class="menu-item">
+			        <i class="fa-solid fa-table-cells-large"></i>
+			        <span class="menu-text">Dashboard</span>
+			    </a>
+
+			    <!-- Inventario -->
+			    <a th:if="${#authentication.authorities.![authority].contains('ROLE_ADMINISTRADOR')
+			            or #authentication.authorities.![authority].contains('ROLE_ALMACEN')
+			            or #authentication.authorities.![authority].contains('ROLE_GERENCIA')}"
+			       th:href="@{/productos}"
+			       class="menu-item">
+			        <i class="fa-solid fa-cube"></i>
+			        <span class="menu-text">Inventario</span>
+			        <span class="badge-count" th:text="${totalProductos}"></span>
+			    </a>
+
+			    <!-- Alertas -->
+			    <a th:if="${#authentication.authorities.![authority].contains('ROLE_ADMINISTRADOR') or #authentication.authorities.![authority].contains('ROLE_ALMACEN')}"
+			      th:href="@{/productos/alertas}"
+			       class="menu-item">
+			        <i class="fa-regular fa-bell"></i>
+			        <span class="menu-text">Alertas</span>
+			    </a>
+
+			    <p class="menu-label">Gestión</p>
+
+			    <!-- Movimientos -->
+			    <a th:if="${#authentication.authorities.![authority].contains('ROLE_ADMINISTRADOR') or #authentication.authorities.![authority].contains('ROLE_ALMACEN')}"
+			       th:href="@{/movimientos}"
+			       class="menu-item">
+			        <i class="fa-solid fa-arrow-right-arrow-left"></i>
+			        <span class="menu-text">Movimientos</span>
+			    </a>
+
+			    <!-- Proveedores -->
+			    <a th:if="${#authentication.authorities.![authority].contains('ROLE_ADMINISTRADOR')
+			            or #authentication.authorities.![authority].contains('ROLE_ALMACEN')}"
+			       th:href="@{/proveedores}"
+			       class="menu-item activo">
+			        <i class="fa-solid fa-truck"></i>
+			        <span class="menu-text">Proveedores</span>
+			    </a>
+
+			    <!-- Categorías -->
+			    <a th:if="${#authentication.authorities.![authority].contains('ROLE_ADMINISTRADOR')}"
+			       th:href="@{/categorias}"
+			       class="menu-item">
+			        <i class="fa-solid fa-tags"></i>
+			        <span class="menu-text">Categorías</span>
+			    </a>
+
+			    <p class="menu-label">Análisis</p>
+
+			    <!-- Reportes -->
+			    <a th:if="${#authentication.authorities.![authority].contains('ROLE_ADMINISTRADOR')
+			            or #authentication.authorities.![authority].contains('ROLE_GERENCIA')}"
+			       th:href="@{/productos/reportes}"
+			       class="menu-item">
+			        <i class="fa-solid fa-chart-column"></i>
+			        <span class="menu-text">Reportes</span>
+			    </a>
+
+			    <!-- Usuarios -->
+			    <a th:if="${#authentication.authorities.![authority].contains('ROLE_ADMINISTRADOR')}"
+			       th:href="@{/usuarios}"
+			       class="menu-item">
+			        <i class="fa-solid fa-users"></i>
+			        <span class="menu-text">Usuarios</span>
+			    </a>
+
+			</div>
+
+			<div class="sidebar-footer">
+				<form th:action="@{/logout}" method="post" style="margin: 0;">
+					<button type="submit" class="btn-logout"> <i class="fa-solid fa-right-from-bracket"></i>
+						Cerrar sesión
+					</button>
+				</form>
+			</div>
+		</aside>
+
+    <!-- MAIN -->
+
+    <div class="main-wrapper">
+
+        <!-- HEADER -->
+
+        <header class="top-header">
+
+            <div class="header-title">
+
+                Plaza Quattro — Gestión de Inventarios
+
+            </div>
+
+			<div class="header-user"> 
+				<div class="avatar"th:text="${#strings.substring(usuario,0,1)}"> A</div> 
+				<div class="user-info">
+					<span th:text="${usuario}">  Administrador </span>
+										 <small class="rol-usuario"
+										        th:text="${rol}">
+										     ADMINISTRADOR
+										 </small>
+				</div>
+					 
+			</div>
+
+        </header>
+
+        <!-- CONTENIDO -->
+
+        <main class="main-content">
+
+            <!-- TITULO -->
+
+            <div class="encabezado-formulario">
+
+                <div class="titulo-formulario">
+
+                    <h1>
+                        Editar Proveedor
+                    </h1>
+
+                    <p>
+                        Actualiza la información del proveedor
+                    </p>
+
+                </div>
+
+            </div>
+
+            <!-- FORMULARIO -->
+
+            <div class="contenedor-formulario">
+
+                <section class="panel">
+
+                    <form th:action="@{/proveedores/guardar}"
+                          th:object="${proveedor}"
+                          method="post">
+
+                        <!-- ID OCULTO -->
+
+                        <input type="hidden"
+                               th:field="*{idProveedor}">
+
+                        <div class="grid-form">
+
+                            <!-- Nombre -->
+
+                            <div class="grupo-form">
+
+                                <label>
+                                    Nombre
+                                </label>
+
+                                <input type="text"
+                                       th:field="*{nombre}"
+                                       required>
+
+                            </div>
+
+                            <!-- Teléfono -->
+
+                            <div class="grupo-form">
+
+                                <label>
+                                    Teléfono
+                                </label>
+
+                                <input type="text"
+                                       th:field="*{telefono}"
+                                       required>
+
+                            </div>
+
+                            <!-- Email -->
+
+                            <div class="grupo-form">
+
+                                <label>
+                                    Email
+                                </label>
+
+                                <input type="email"
+                                       th:field="*{email}"
+                                       required>
+
+                            </div>
+
+                            <!-- RUC -->
+
+                            <div class="grupo-form">
+
+                                <label>
+                                    RUC
+                                </label>
+
+                                <input type="text"
+                                       th:field="*{ruc}"
+                                       required>
+
+                            </div>
+
+                            <!-- Dirección -->
+
+                            <div class="grupo-form"
+                                 style="grid-column: span 2;">
+
+                                <label>
+                                    Dirección
+                                </label>
+
+                                <input type="text"
+                                       th:field="*{direccion}"
+                                       required>
+
+                            </div>
+
+                        </div>
+
+                        <button type="submit"
+                                class="btn-guardar">
+
+                            Actualizar Proveedor
+
+                        </button>
+
+                    </form>
+
+                </section>
+
+            </div>
+
+        </main>
+
+    </div>
+
+</body>
+
+</html>

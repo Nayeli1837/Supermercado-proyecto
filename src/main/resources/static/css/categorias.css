@@ -1,0 +1,49 @@
+/* CATEGORIAS */
+
+.titulo-panel{
+
+    margin-bottom:20px;
+
+}
+
+.codigo-tabla{
+
+    color:var(--texto-secundario);
+
+    font-family:monospace;
+
+    font-size:14px;
+
+}
+
+/* ALERTAS */
+
+.alerta{
+
+    padding:14px 18px;
+
+    border-radius:12px;
+
+    margin-bottom:20px;
+
+    font-size:14px;
+
+    font-weight:500;
+
+}
+
+.alerta-exito{
+
+    background:#dcfce7;
+
+    color:#166534;
+
+}
+
+.alerta-error{
+
+    background:#fee2e2;
+
+    color:#991b1b;
+
+}

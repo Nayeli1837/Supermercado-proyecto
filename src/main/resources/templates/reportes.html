@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<meta charset="UTF-8">
+	<title>SIGI - Módulo de Reportes</title>
+	<link rel="stylesheet" th:href="@{/css/estilos.css}">
+	<link rel="stylesheet" th:href="@{/css/dashboard.css}">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+</head>
+
+<body>
+	<aside class="sidebar">
+		<div class="sidebar-brand">
+			<span class="logo-dot"></span> SIGI
+		</div>
+
+		<div class="sidebar-menu">
+
+		    <p class="menu-label">Principal</p>
+
+		    <!-- Dashboard -->
+		    <a th:if="${#authentication != null}"
+		       th:href="@{/dashboard}"
+		       class="menu-item">
+		        <i class="fa-solid fa-table-cells-large"></i>
+		        <span class="menu-text">Dashboard</span>
+		    </a>
+
+		    <!-- Inventario -->
+		    <a th:if="${#authentication.authorities.![authority].contains('ROLE_ADMINISTRADOR')
+		            or #authentication.authorities.![authority].contains('ROLE_ALMACEN')
+		            or #authentication.authorities.![authority].contains('ROLE_GERENCIA')}"
+		       th:href="@{/productos}"
+		       class="menu-item">
+		        <i class="fa-solid fa-cube"></i>
+		        <span class="menu-text">Inventario</span>
+		        <span class="badge-count" th:text="${totalProductos}"></span>
+		    </a>
+
+		    <!-- Alertas -->
+		    <a th:if="${#authentication.authorities.![authority].contains('ROLE_ADMINISTRADOR') or #authentication.authorities.![authority].contains('ROLE_ALMACEN')}"
+		      th:href="@{/productos/alertas}"
+		       class="menu-item">
+		        <i class="fa-regular fa-bell"></i>
+		        <span class="menu-text">Alertas</span>
+		    </a>
+
+		    <p class="menu-label">Gestión</p>
+
+		    <!-- Movimientos -->
+		    <a th:if="${#authentication.authorities.![authority].contains('ROLE_ADMINISTRADOR') or #authentication.authorities.![authority].contains('ROLE_ALMACEN')}"
+		       th:href="@{/movimientos}"
+		       class="menu-item">
+		        <i class="fa-solid fa-arrow-right-arrow-left"></i>
+		        <span class="menu-text">Movimientos</span>
+		    </a>
+
+		    <!-- Proveedores -->
+		    <a th:if="${#authentication.authorities.![authority].contains('ROLE_ADMINISTRADOR')
+		            or #authentication.authorities.![authority].contains('ROLE_ALMACEN')}"
+		       th:href="@{/proveedores}"
+		       class="menu-item">
+		        <i class="fa-solid fa-truck"></i>
+		        <span class="menu-text">Proveedores</span>
+		    </a>
+
+		    <!-- Categorías -->
+		    <a th:if="${#authentication.authorities.![authority].contains('ROLE_ADMINISTRADOR')}"
+		       th:href="@{/categorias}"
+		       class="menu-item">
+		        <i class="fa-solid fa-tags"></i>
+		        <span class="menu-text">Categorías</span>
+		    </a>
+
+		    <p class="menu-label">Análisis</p>
+
+		    <!-- Reportes -->
+		    <a th:if="${#authentication.authorities.![authority].contains('ROLE_ADMINISTRADOR')
+		            or #authentication.authorities.![authority].contains('ROLE_GERENCIA')}"
+		       th:href="@{/productos/reportes}"
+		       class="menu-item activo">
+		        <i class="fa-solid fa-chart-column"></i>
+		        <span class="menu-text">Reportes</span>
+		    </a>
+
+		    <!-- Usuarios -->
+		    <a th:if="${#authentication.authorities.![authority].contains('ROLE_ADMINISTRADOR')}"
+		       th:href="@{/usuarios}"
+		       class="menu-item">
+		        <i class="fa-solid fa-users"></i>
+		        <span class="menu-text">Usuarios</span>
+		    </a>
+
+		</div>
+
+		<div class="sidebar-footer">
+			<form th:action="@{/logout}" method="post" style="margin: 0;">
+				<button type="submit" class="btn-logout"> <i class="fa-solid fa-right-from-bracket"></i>
+					Cerrar sesión
+				</button>
+			</form>
+		</div>
+	</aside>
+
+	<div class="main-wrapper">
+		<header class="top-header">
+			<div class="header-title">Plaza 4 — Gestión de Inventarios</div>
+			<div class="header-user">
+				<div class="avatar" th:text="${#strings.substring(usuario,0,1)}"> A</div>
+				<div class="user-info">
+					<span th:text="${usuario}"> Administrador </span>
+					<small class="rol-usuario" th:text="${rol}">
+						ADMINISTRADOR
+					</small>
+				</div>
+
+			</div>
+		</header>
+
+		<main class="main-content">
+
+			<div class="reportes-header">
+				<div class="header-texto">
+					<h2>Reporte Ejecutivo de Unidades</h2>
+					<p>Análisis en tiempo real de las existencias y estado del almacén.</p>
+				</div>
+				<div class="header-acciones">
+					<a th:href="@{/productos/reporte/pdf}" class="btn-pdf">
+						📄 Exportar PDF
+					</a>
+				</div>
+			</div>
+			
+			<div class="report-card">
+
+			    <div class="report-header">
+			        <h3>Composición del Inventario</h3>
+			        <p>Distribución de productos por categoría</p>
+			    </div>
+
+			    <div class="inventory-list">
+
+					<div class="inventory-item"
+					     th:each="item : ${composicion}">
+
+					    <div class="inventory-name">
+					        <span class="dot yellow"></span>
+					        <span th:text="${item.categoria()}"></span>
+					    </div>
+
+					    <div class="progress-bar">
+					        <div class="progress green-bg"
+					             th:style="'width:' + ${item.ancho()} + '%'">
+					        </div>
+					    </div>
+
+					    <span class="cantidad"
+					          th:text="${item.cantidad()}">
+					    </span>
+
+					</div>
+			    </div>
+
+			</div>
+			
+			<div class="dashboard-cards">
+
+						    <!-- PRODUCTOS -->
+
+						    <div class="card-dashboard card-verde">
+
+						        <div class="card-header">
+
+						            <div class="card-icon">
+						                <i class="fa-solid fa-boxes-stacked"></i>
+						            </div>
+
+						            <span class="card-status positivo">
+						                Sistema actualizado
+						            </span>
+
+						        </div>
+
+						        <h2 th:text="${totalProductos}">0</h2>
+
+						        <h4>Productos en stock</h4>
+
+						        <p>
+						            Total de productos disponibles en el inventario.
+						        </p>
+
+						    </div>
+						    <!-- QUIEBRES -->
+
+						    <div class="card-dashboard card-rojo">
+
+						        <div class="card-header">
+
+						            <div class="card-icon">
+						                <i class="fa-solid fa-triangle-exclamation"></i>
+						            </div>
+
+						            <span class="card-status alerta">
+						                Requiere atención
+						            </span>
+
+						        </div>
+
+						        <h2 th:text="${productosAgotados}">0</h2>
+
+						        <h4>Quiebres de stock</h4>
+
+						        <p>
+						            Productos sin existencias para despacho.
+						        </p>
+
+						    </div>
+
+						    <!-- STOCK BAJO -->
+
+						    <div class="card-dashboard card-naranja">
+
+						        <div class="card-header">
+
+						            <div class="card-icon">
+						                <i class="fa-solid fa-chart-line"></i>
+						            </div>
+
+						            <span class="card-status advertencia">
+						                Monitorear
+						            </span>
+
+						        </div>
+
+						        <h2 th:text="${stockBajo}">0</h2>
+
+						        <h4>Stock mínimo</h4>
+
+						        <p>
+						            Productos próximos a agotarse.
+						        </p>
+
+						    </div>
+
+						    <!-- PRECISIÓN -->
+
+						    <div class="card-dashboard card-azul">
+
+						        <div class="card-header">
+
+						            <div class="card-icon">
+						                <i class="fa-solid fa-bullseye"></i>
+						            </div>
+
+						            <span class="card-status excelente">
+						                Excelente
+						            </span>
+
+						        </div>
+
+						        <h2>94%</h2>
+
+						        <h4>Precisión del inventario</h4>
+
+						        <p>
+						            Nivel de exactitud entre el sistema y el stock físico.
+						        </p>
+
+						    </div>
+
+						</div>
+
+			<div class="tabla-contenedor">
+				<h3>Vista Previa de Datos del Reporte</h3>
+				<section class="panel">
+				<table class="tabla">
+					<thead>
+						<tr>
+							<th>ID</th>
+							<th>Descripción / Nombre</th>
+							<th>Categoría</th>
+							<th class="text-center">Estado Almacén</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr th:each="p : ${productos}">
+							<td class="text-muted" th:text="${p.id}">1</td>
+							<td th:text="${p.nombre}">Producto</td>
+							<td th:text="${p.categoria != null ? p.categoria.nombre : 'Sin Categoría'}">Categoría</td>
+							<td class="text-center">
+								<span th:if="${p.stock <= 5}" class="estado-urgente">
+									⚠️ Reposición Urgente (<span th:text="${p.stock}"></span>)
+								</span>
+								<span th:if="${p.stock > 5}" class="estado-optimo">
+									✅ Stock Óptimo (<span th:text="${p.stock}"></span>)
+								</span>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+				</section>
+			</div>
+		</main>
+	</div>
+
+
+</body>
+
+</html>

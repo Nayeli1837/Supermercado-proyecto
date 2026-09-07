@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+
+<head>
+
+	<meta charset="UTF-8">
+
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<title>Nuevo Producto</title>
+
+	<link rel="stylesheet" th:href="@{/css/estilos.css}">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
+</head>
+
+<body>
+
+	<!-- SIDEBAR -->
+
+	<aside class="sidebar">
+		<div class="sidebar-brand">
+			<span class="logo-dot"></span> SIGI
+		</div>
+
+		<div class="sidebar-menu">
+			<p class="menu-label">Principal</p>
+			<a th:href="@{/dashboard}" class="menu-item"><i class="fa-solid fa-table-cells-large"></i><span
+					class="menu-text">Dashboard</span></a>
+
+			<a th:href="@{/productos}" class="menu-item activo"><i class="fa-solid fa-cube"></i>
+				<span class="menu-text">Inventario</span>
+				<span class="badge-count" th:text="${totalProductos}">248</span>
+			</a>
+
+			<a href="#" class="menu-item"><i class="fa-regular fa-bell"></i><span class="menu-text">Alertas</span></a>
+
+			<p class="menu-label">Gestión</p>
+			<a th:href="@{/movimientos}" class="menu-item"> <i class="fa-solid fa-arrow-right-arrow-left"></i><span
+					class="menu-text">Movimientos</span></a>
+			<a th:href="@{/proveedores}" class="menu-item"><i class="fa-solid fa-truck"></i><span
+					class="menu-text">Proveedores</span></a>
+			<a th:href="@{/categorias}" class="menu-item"><i class="fa-solid fa-tags"></i><span
+					class="menu-text">Categorías</span></a>
+
+			<p class="menu-label">Análisis</p>
+			<a th:href="@{/productos/reportes}" class="menu-item"> <i class="fa-solid fa-chart-column"></i><span
+					class="menu-text">Reportes</span></a>
+			<a th:href="@{/usuarios}" class="menu-item"><i class="fa-solid fa-users"></i><span
+					class="menu-text">Usuarios</span></a>
+		</div>
+
+		<div class="sidebar-footer">
+			<form th:action="@{/logout}" method="post" style="margin: 0;">
+				<button type="submit" class="btn-logout"> <i class="fa-solid fa-right-from-bracket"></i>
+					Cerrar sesión
+				</button>
+			</form>
+		</div>
+	</aside>
+
+	<!-- MAIN -->
+
+	<div class="main-wrapper">
+
+		<!-- HEADER -->
+
+		<header class="top-header">
+
+			<div class="header-title">
+
+				Plaza 4 — Gestión de Inventarios
+
+			</div>
+			<div class="header-user">
+				<div class="avatar" th:text="${#strings.substring(usuario,0,1)}"> A</div>
+				<div class="user-info">
+					<span th:text="${usuario}"> Administrador </span>
+					<small class="rol-usuario" th:text="${rol}">
+						ADMINISTRADOR
+					</small>
+				</div>
+
+			</div>
+
+		</header>
+
+		<!-- CONTENIDO -->
+
+		<main class="main-content">
+
+			<!-- TITULO -->
+
+			<div class="encabezado-formulario">
+
+				<div class="titulo-formulario">
+
+					<h1>
+						Nueva Categoría
+					</h1>
+
+					<p>
+						Completa la información de la Categoría
+					</p>
+
+				</div>
+
+			</div>
+
+			<!-- FORMULARIO -->
+
+			<div class="contenedor-formulario">
+
+				<section class="panel">
+
+					<form th:action="@{/categorias/guardar}"
+					      th:object="${categoria}"
+					      method="post">
+
+					    <div class="grupo-form">
+
+					        <label for="nombre">
+					            Nombre
+					        </label>
+
+					        <input type="text"
+					               id="nombre"
+					               th:field="*{nombre}"
+					               placeholder="Ej: Bebidas"
+					               required>
+
+					    </div>
+
+					    <button type="submit"
+					            class="btn-guardar">
+
+					        Guardar Categoría
+
+					    </button>
+
+					</form>
+
+				</section>
+
+			</div>
+
+		</main>
+
+	</div>
+
+</body>
+
+</html>

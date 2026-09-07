@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+
+<head>
+
+	<meta charset="UTF-8">
+
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<title>
+		SIGI - Gestión de Categorías
+	</title>
+
+	<link rel="stylesheet" th:href="@{/css/estilos.css}">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
+</head>
+
+<body>
+
+	<!-- SIDEBAR -->
+
+	<aside class="sidebar">
+		<div class="sidebar-brand">
+			<span class="logo-dot"></span> SIGI
+		</div>
+
+		<div class="sidebar-menu">
+			<p class="menu-label">Principal</p>
+			<a th:href="@{/dashboard}" class="menu-item"><i class="fa-solid fa-table-cells-large"></i><span
+					class="menu-text">Dashboard</span></a>
+
+			<a th:href="@{/productos}" class="menu-item"><i class="fa-solid fa-cube"></i>
+				<span class="menu-text">Inventario</span>
+				<span class="badge-count" th:text="${totalProductos}">248</span>
+			</a>
+
+			<a th:href="@{/productos/alertas}" class="menu-item"><i class="fa-regular fa-bell"></i><span class="menu-text">Alertas</span></a>
+
+			<p class="menu-label">Gestión</p>
+			<a th:href="@{/movimientos}" class="menu-item"> <i class="fa-solid fa-arrow-right-arrow-left"></i><span
+					class="menu-text">Movimientos</span></a>
+			<a th:href="@{/proveedores}" class="menu-item"><i class="fa-solid fa-truck"></i><span
+					class="menu-text">Proveedores</span></a>
+			<a th:href="@{/categorias}" class="menu-item activo"><i class="fa-solid fa-tags"></i><span
+					class="menu-text">Categorías</span></a>
+
+			<p class="menu-label">Análisis</p>
+			<a th:href="@{/productos/reportes}" class="menu-item"> <i class="fa-solid fa-chart-column"></i><span
+					class="menu-text">Reportes</span></a>
+			<li sec:authorize="hasRole('ADMINISTRADOR')"><a th:href="@{/usuarios}" class="menu-item"><i class="fa-solid fa-users"></i><span
+					class="menu-text">Usuarios</span></a></li>
+		</div>
+
+		<div class="sidebar-footer">
+			<form th:action="@{/logout}" method="post" style="margin: 0;">
+				<button type="submit" class="btn-logout"> <i class="fa-solid fa-right-from-bracket"></i>
+					Cerrar sesión
+				</button>
+			</form>
+		</div>
+	</aside>
+	<!-- MAIN -->
+
+	<div class="main-wrapper">
+
+		<!-- HEADER -->
+
+		<header class="top-header">
+
+			<div class="header-title">
+
+				Plaza 4 — Gestión de Categorías
+
+			</div>
+
+			<div class="header-user"> 
+				<div class="avatar"th:text="${#strings.substring(usuario,0,1)}"> A</div> 
+				<div class="user-info">
+					<span th:text="${usuario}">  Administrador </span>
+										 <small class="rol-usuario"
+										        th:text="${rol}">
+										     ADMINISTRADOR
+										 </small>
+				</div>
+					 
+			</div>
+
+		</header>
+
+		<!-- CONTENIDO -->
+
+		<main class="main-content">
+
+			<!-- TITULO -->
+
+			<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
+
+				<div>
+					<h1 style="margin-bottom: 5px;">Gestión de Categorías</h1>
+					<p style="color: var(--texto-secundario); font-size: 0.9rem;">Administra las categorías del sistema</p>
+				</div>
+				<a th:href="@{/categorias/nuevo}" class="btn btn-exito">
+
+					<i class="fa-solid fa-tags"></i>Nueva categoría
+
+				</a>
+			</div>
+
+			<!-- LISTA -->
+			<section class="panel">
+
+				<!-- ALERTAS -->
+
+				<div th:if="${mensajeExito}" class="alerta alerta-exito" th:text="${mensajeExito}">
+				</div>
+
+				<div th:if="${mensajeError}" class="alerta alerta-error" th:text="${mensajeError}">
+				</div>
+
+				<table class="tabla">
+
+					<thead>
+
+						<tr>
+
+							<th>ID</th>
+
+							<th>Categoría</th>
+
+							<th>Estado</th>
+
+							<th>Acciones</th>
+
+						</tr>
+
+					</thead>
+
+					<tbody>
+
+						<tr th:each="cat : ${categorias}">
+
+							<!-- ID -->
+
+							<td th:text="${cat.id}">
+							</td>
+
+							<!-- Categoría -->
+
+							<td>
+
+								<div class="producto-info">
+
+									<strong th:text="${cat.nombre}">
+									</strong>
+
+								</div>
+
+							</td>
+
+							<!-- Estado -->
+
+							<td>
+
+								<span class="badge-estado estado-activo">
+
+									Activa
+
+								</span>
+
+							</td>
+
+							<!-- Acciones -->
+
+							<td>
+
+								<div class="acciones">
+
+									<form th:action="@{/categorias/eliminar/{id}(id=${cat.id})}" method="post" onsubmit="return confirm(
+                                  '¿Seguro que deseas eliminar esta categoría?'
+                                  )">
+
+								  <button type="submit"
+								          class="btn-icono btn-eliminar"
+								          title="Eliminar producto">
+								      <i class="fa-solid fa-trash"></i>
+
+								  </button>
+
+									</form>
+
+								</div>
+
+							</td>
+
+						</tr>
+
+					</tbody>
+
+				</table>
+
+			</section>
+
+		</main>
+
+	</div>
+
+</body>
+
+</html>

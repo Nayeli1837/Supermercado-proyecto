@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>SIGI - Nuevo Usuario</title>
+    <link rel="stylesheet" th:href="@{/css/estilos.css}">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+</head>
+<body>
+
+	<aside class="sidebar">
+		<div class="sidebar-brand">
+			<span class="logo-dot"></span> SIGI
+		</div>
+
+		<div class="sidebar-menu">
+
+			<p class="menu-label">Principal</p>
+
+			<!-- Dashboard -->
+			<a th:if="${#authentication != null}" th:href="@{/dashboard}" class="menu-item">
+				<i class="fa-solid fa-table-cells-large"></i>
+				<span class="menu-text">Dashboard</span>
+			</a>
+
+			<!-- Inventario -->
+			<a th:if="${#authentication.authorities.![authority].contains('ROLE_ADMINISTRADOR')
+			            or #authentication.authorities.![authority].contains('ROLE_ALMACEN')
+			            or #authentication.authorities.![authority].contains('ROLE_GERENCIA')}" th:href="@{/productos}"
+				class="menu-item">
+				<i class="fa-solid fa-cube"></i>
+				<span class="menu-text">Inventario</span>
+				<span class="badge-count" th:text="${totalProductos}"></span>
+			</a>
+
+			<!-- Alertas -->
+			<a th:if="${#authentication.authorities.![authority].contains('ROLE_ADMINISTRADOR') or #authentication.authorities.![authority].contains('ROLE_ALMACEN')}"
+				th:href="@{/productos/alertas}" class="menu-item">
+				<i class="fa-regular fa-bell"></i>
+				<span class="menu-text">Alertas</span>
+			</a>
+
+			<p class="menu-label">Gestión</p>
+
+			<!-- Movimientos -->
+			<a th:if="${#authentication.authorities.![authority].contains('ROLE_ADMINISTRADOR') or #authentication.authorities.![authority].contains('ROLE_ALMACEN')}"
+				th:href="@{/movimientos}" class="menu-item">
+				<i class="fa-solid fa-arrow-right-arrow-left"></i>
+				<span class="menu-text">Movimientos</span>
+			</a>
+
+			<!-- Proveedores -->
+			<a th:if="${#authentication.authorities.![authority].contains('ROLE_ADMINISTRADOR')
+			            or #authentication.authorities.![authority].contains('ROLE_ALMACEN')}" th:href="@{/proveedores}"
+				class="menu-item">
+				<i class="fa-solid fa-truck"></i>
+				<span class="menu-text">Proveedores</span>
+			</a>
+
+			<!-- Categorías -->
+			<a th:if="${#authentication.authorities.![authority].contains('ROLE_ADMINISTRADOR')}"
+				th:href="@{/categorias}" class="menu-item">
+				<i class="fa-solid fa-tags"></i>
+				<span class="menu-text">Categorías</span>
+			</a>
+
+			<p class="menu-label">Análisis</p>
+
+			<!-- Reportes -->
+			<a th:if="${#authentication.authorities.![authority].contains('ROLE_ADMINISTRADOR')
+			            or #authentication.authorities.![authority].contains('ROLE_GERENCIA')}" th:href="@{/productos/reportes}"
+				class="menu-item">
+				<i class="fa-solid fa-chart-column"></i>
+				<span class="menu-text">Reportes</span>
+			</a>
+
+			<!-- Usuarios -->
+			<a th:if="${#authentication.authorities.![authority].contains('ROLE_ADMINISTRADOR')}" th:href="@{/usuarios}"
+				class="menu-item activo">
+				<i class="fa-solid fa-users"></i>
+				<span class="menu-text">Usuarios</span>
+			</a>
+
+		</div>
+
+		<div class="sidebar-footer">
+			<form th:action="@{/logout}" method="post" style="margin: 0;">
+				<button type="submit" class="btn-logout"> <i class="fa-solid fa-right-from-bracket"></i>
+					Cerrar sesión
+				</button>
+			</form>
+		</div>
+	</aside>
+
+    <div class="main-wrapper">
+        <header class="top-header">
+            <div class="header-title">Plaza 4 - Módulo de Configuración</div>
+			<div class="header-user">
+				<div class="avatar" th:text="${#strings.substring(usuario,0,1)}"> A</div>
+				<div class="user-info">
+					<span th:text="${usuario}"> Administrador </span>
+					<small class="rol-usuario" th:text="${rol}">
+						ADMINISTRADOR
+					</small>
+				</div>
+
+			</div>
+        </header>
+
+        <main class="main-content">
+            <div class="encabezado-con-accion">
+                <div class="encabezado-vista">
+                    <h1>Registrar Nuevo Usuario</h1>
+                    <p>Asigna credenciales y accesos al sistema</p>
+                </div>
+                <a th:href="@{/usuarios}" class="btn-secundario">
+                    <span>← Volver al Listado</span>
+                </a>
+            </div>
+
+            <div class="contenedor-formulario-corto">
+                <div class="panel card-formulario">
+                    <form th:action="@{/usuarios/guardar}" th:object="${nuevoUsuario}" method="post" class="form-grid">
+                        
+                        <div class="form-group-full">
+                            <label class="form-label">Nombre Completo</label>
+                            <input type="text" th:field="*{nombre}" class="form-input" placeholder="Ej. Juan Pérez" required />
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Nombre de Usuario (Username)</label>
+                            <input type="text" th:field="*{username}" class="form-input" placeholder="Ej. jperez" required />
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Correo Electrónico</label>
+                            <input type="email" th:field="*{email}" class="form-input" placeholder="correo@empresa.com" required />
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Contraseña de Acceso</label>
+                            <input type="password" th:field="*{password}" class="form-input" placeholder="••••••••" required />
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Perfil / Rol de Acceso</label>
+                            <select th:field="*{rol}" class="form-select" required>
+                                <option value="ADMINISTRADOR">Administrador</option>
+                                <option value="ALMACEN">Encargado de Almacén</option>
+                                <option value="GERENCIA">Gerencia</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group-full">
+                            <label class="form-label">Estado Inicial</label>
+                            <select th:field="*{estado}" class="form-select" required>
+                                <option value="ACTIVO">Activo (Permite el acceso inmediato)</option>
+                                <option value="INACTIVO">Inactivo (Acceso bloqueado)</option>
+                            </select>
+                        </div>
+
+                        <div class="form-acciones form-group-full">
+                            <button type="reset" class="btn-limpiar">Limpiar Campos</button>
+                            <button type="submit" class="btn-guardar">💾 Guardar Usuario</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </main>
+    </div>
+
+</body>
+</html>
