@@ -1,0 +1,53 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>403 - Acceso denegado</title>
+    <link rel="stylesheet" href="/css/acceso-denegado.css">
+</head>
+<body>
+    <main class="error-container">
+        <div class="error-card">
+            <div class="icon-container">
+                <svg xmlns="http://www.w3.org/2000/svg"
+                     width="54" height="54" viewBox="0 0 24 24"
+                     fill="none" stroke="currentColor"
+                     stroke-width="1.7" stroke-linecap="round"
+                     stroke-linejoin="round" aria-hidden="true">
+                    <path d="M12 22s8-4 8-11V5l-8-3-8 3v6c0 7 8 11 8 11z"/>
+                    <path d="m9 9 6 6"/>
+                    <path d="m15 9-6 6"/>
+                </svg>
+            </div>
+
+            <p class="error-code">ERROR 403</p>
+
+            <h1>Acceso denegado</h1>
+
+            <p class="description">
+                Lo sentimos, no tienes los permisos necesarios
+                para acceder a esta página o recurso.
+            </p>
+
+            <div class="notice">
+                <span class="notice-symbol">!</span>
+                <p>
+                    Si crees que esto es un error, contacta
+                    con el administrador del sistema.
+                </p>
+            </div>
+
+			<a th:href="@{/dashboard}" class="btn-home">
+			    <span aria-hidden="true">←</span>
+			    Volver al inicio
+			</a>
+
+            <p class="footer-text">
+                Código de respuesta HTTP: 403 Forbidden
+            </p>
+        </div>
+    </main>
+</body>
+</html>

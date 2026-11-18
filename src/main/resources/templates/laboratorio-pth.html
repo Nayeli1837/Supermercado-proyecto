@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Laboratorio Pass-the-Hash</title>
+</head>
+
+<body>
+
+    <h1>Laboratorio de Seguridad</h1>
+
+    <h2>Simulación de Pass-the-Hash</h2>
+
+    <p>
+        Esta herramienta realiza una simulación académica.
+        No utiliza hashes reales ni credenciales de Windows.
+    </p>
+
+    <form action="/laboratorio/pth/simular" method="post">
+
+        <label>Usuario objetivo:</label>
+        <input type="text"
+               name="username"
+               placeholder="Ejemplo: admin"
+               required>
+
+        <br><br>
+
+        <label>Credencial simulada:</label>
+        <input type="text"
+               name="credencialSimulada"
+               placeholder="Ejemplo: PTH-SIMULADO-12345"
+               required>
+
+        <br><br>
+
+        <button type="submit">
+            Simular intento
+        </button>
+
+    </form>
+
+    <div th:if="${resultado != null}">
+
+        <hr>
+
+        <h2>Resultado</h2>
+
+        <pre th:text="${resultado}"></pre>
+
+    </div>
+
+</body>
+</html>

@@ -1,6 +1,6 @@
 package com.example.demo.controller;
 
-
+// Importaciones necesarias
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
@@ -14,15 +14,18 @@ import com.example.demo.service.ProveedorService;
 
 import jakarta.validation.Valid;
 
-
+// Controlador para gestionar los proveedores
 @Controller
 @RequestMapping("/proveedores")
 public class ProveedorController {
 
+    // Servicios para gestionar proveedores y productos
     @Autowired
     private ProveedorService proveedorService;
     @Autowired
     private ProductoService productoService;
+
+    // Mostrar la lista de proveedores y los totales
     @GetMapping
     public String listarProveedores(Model model) {
 
@@ -39,6 +42,8 @@ public class ProveedorController {
 
         return "proveedores";
     }
+
+    // Mostrar el formulario para registrar un proveedor
     @GetMapping("/nuevo")
     public String nuevoProveedor(Model model,
                                  Authentication auth) {
@@ -53,12 +58,14 @@ public class ProveedorController {
         return "nuevo-proveedor";
     }
 
+    // Guardar un proveedor validando sus datos
     @PostMapping("/guardar")
     public String guardarProveedor(
             @Valid @ModelAttribute("proveedor") Proveedor proveedor,
             BindingResult result,
             Model model) {
 
+        // Verificar si existen errores en los datos
         if (result.hasErrors()) {
             return "nuevo-proveedor";
         }
@@ -68,6 +75,7 @@ public class ProveedorController {
         return "redirect:/proveedores";
     }
 
+    // Buscar un proveedor para mostrar sus datos en el formulario de edición
     @GetMapping("/editar/{id}")
     public String editarProveedor(@PathVariable Long id,
                                   Model model, Authentication auth) {
@@ -79,6 +87,7 @@ public class ProveedorController {
         return "editar-proveedor";
     }
 
+    // Eliminar un proveedor según su ID
     @PostMapping("/eliminar/{id}")
     public String eliminarProveedor(@PathVariable Long id) {
 

@@ -61,6 +61,17 @@
 			<label>Contraseña</label>
 
 			<input type="password" name="password" placeholder="Ingrese contraseña">
+			<div class="laboratorio-box">
+			    <label>
+			        <input type="checkbox" name="simulacionPth" value="true">
+			        Activar simulación de Pass-the-Hash
+			    </label>
+
+			    <input type="text"
+			           name="credencialSimulada"
+			           placeholder="Credencial simulada (solo laboratorio)"
+			           class="form-control">
+			</div>
 
 			<button type="submit" class="btn-login">
 				<i class="fa-solid fa-right-to-bracket"></i>
@@ -75,6 +86,11 @@
 
 				Usuario o contraseña incorrectos
 
+			</div>
+			<div th:if="${param.pth}" class="error">
+			    <strong>🚨 ALERTA DE SEGURIDAD</strong>
+			    <br>
+			    Intento de Pass-the-Hash simulado detectado y bloqueado.
 			</div>
 
 		</form>
